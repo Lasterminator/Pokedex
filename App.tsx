@@ -1,33 +1,18 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, SafeAreaView, FlatList } from "react-native";
-import { useState, useEffect } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MainNavigator } from './src/navigators/MainNavigator';
+import { NavigationContainer } from '@react-navigation/native';
+import { NativeBaseProvider } from 'native-base';
+
+const queryClient = new QueryClient();
 
 export default function App() {
-  const [pokemon, setPokemon] = useState<{ name: string }[]>([]);
-  useEffect(() => {
-    fetch("https://pokeapi.co/api/v2/pokemon/")
-      .then((res) => res.json())
-      .then((data) => {
-        setPokemon(data.results);
-      });
-  }, []);
-  console.log(pokemon);
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={pokemon}
-        keyExtractor={(item) => item.name}
-        renderItem={({ item }) => <Text>{item.name}</Text>}
-      />
-    </SafeAreaView>
+    <QueryClientProvider client={queryClient}>
+      <NativeBaseProvider>
+        <NavigationContainer>
+          <MainNavigator />
+        </NavigationContainer>
+      </NativeBaseProvider>
+    </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
